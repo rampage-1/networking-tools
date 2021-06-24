@@ -1,0 +1,38 @@
+# example drop rule for iptables: > iptables –A INPUT –p tcp –s 172.16.30.42 –j DROP
+# You can also create OUTPUT and FORWARD rules
+# There are also nat and mangle rules
+# > iptables -L/F to List or Clear rules respectively
+
+# bash
+# general from of a while loop # while [ 1 ]; [do something]; done
+
+# simple netcat listener that does nothing but listen on an arbitrary port
+# $ nc -nvl <port#>
+
+# honeyport.sh draft
+#!/bin/bash
+
+echo "Started"
+
+while [ 1 ]
+do
+        IP=`nc -nvl 1025 2>&1 1>/dev/null | grep "received" | awk -F '[] []' '{print $3;}'`
+        echo "$IP <- is this blank"
+        iptables -A INPUT -p TCP -s $IP -j DROP
+        echo -- $IP has been blocked!
+
+done
+
+# results of established connection
+# adhd@DESKTOP-I1T2G01:/mnt/c/Users/adhd$ sudo ./honeyport.sh
+# [sudo] password for adhd:
+# Started
+# 127.0.0.1 <- is this blank
+# -- 127.0.0.1 has been blocked!
+
+# adhd@DESKTOP-I1T2G01:/mnt/c/Users/adhd$ sudo iptables -L
+# [sudo] password for adhd:
+# Chain INPUT (policy ACCEPT)
+# target     prot opt source               destination
+# DROP       tcp  --  localhost            anywhere
+# ...
