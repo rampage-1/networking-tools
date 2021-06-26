@@ -5,7 +5,6 @@
 # Sets up a short-lived TCP socket to HOST:PORT 
 
 import socket
-import sys
 
 HOST = '127.0.0.1' # loopback address for testing
 PORT = 7777 # arbitrary port
